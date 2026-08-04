@@ -31,7 +31,7 @@ export const HeroSection: React.FC = () => {
               className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm font-extrabold shadow-2xs"
             >
               <Sparkles className="w-3.5 h-3.5 text-red-600 shrink-0" />
-              <span className="truncate">🙏 !! जय माता दी !! • MAA LAXMI TRAVELS</span>
+              <span className="truncate">🙏 !! जय माता दी !! • MAA LAXMI TRAVELS • DAILY BUS SERVICES</span>
             </motion.div>
 
             {/* Main Headline */}
@@ -150,7 +150,7 @@ export const HeroSection: React.FC = () => {
                 <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 bg-white/95 backdrop-blur-md px-3 py-2 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-slate-200 flex items-center justify-between text-[11px] sm:text-xs font-bold text-slate-800 shadow-md">
                   <div className="flex items-center space-x-1.5 truncate">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
-                    <span className="text-slate-700 truncate">Daily Gopalganj Volvo AC Service</span>
+                    <span className="text-slate-700 truncate">Daily Bus Services</span>
                   </div>
 
                   <a
