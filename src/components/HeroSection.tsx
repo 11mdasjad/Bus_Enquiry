@@ -122,7 +122,7 @@ export const HeroSection: React.FC = () => {
           >
             <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-white shadow-xl shadow-slate-200 bg-white group">
               {/* Bus Image */}
-              <div className="relative h-52 sm:h-80 w-full overflow-hidden bg-slate-100">
+              <div className="relative h-60 sm:h-80 w-full overflow-hidden bg-slate-100">
                 <Image
                   src="/volvo-bus-hero.png"
                   alt="Maa Laxmi Travels Volvo Express Bus"
@@ -146,10 +146,6 @@ export const HeroSection: React.FC = () => {
                   <span className="text-[10px] sm:text-xs font-black text-blue-950">MAA LAXMI TRAVELS</span>
                 </div>
 
-                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-red-600 text-white px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-black tracking-wider uppercase shadow-md">
-                  VOLVO EXPRESS
-                </div>
-
                 {/* Bottom Clean Phone Tag Overlay */}
                 <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 bg-white/95 backdrop-blur-md px-3 py-2 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-slate-200 flex items-center justify-between text-[11px] sm:text-xs font-bold text-slate-800 shadow-md">
                   <div className="flex items-center space-x-1.5 truncate">
@@ -165,11 +161,6 @@ export const HeroSection: React.FC = () => {
                     <span>7488202225</span>
                   </a>
                 </div>
-              </div>
-
-              {/* Bottom Quick Route Info */}
-              <div className="p-3 bg-slate-50 text-center border-t border-slate-200 text-[11px] sm:text-xs text-slate-600 font-bold">
-                Gopalganj • Delhi • Lucknow • Kanpur • Direct Express
               </div>
             </div>
           </motion.div>
