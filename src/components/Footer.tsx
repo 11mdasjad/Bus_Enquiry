@@ -1,10 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { Phone, MapPin, MessageSquare, ArrowUp, ShieldAlert } from "lucide-react";
+import { Phone, MapPin, MessageSquare, ArrowUp, ShieldAlert, QrCode, Copy, Check, X, ExternalLink } from "lucide-react";
 
 export const Footer: React.FC = () => {
+  const [copiedUpi, setCopiedUpi] = useState(false);
+  const [showQrModal, setShowQrModal] = useState(false);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -13,6 +16,14 @@ export const Footer: React.FC = () => {
   const directWhatsAppUrl = `https://wa.me/${whatsAppNumber}?text=${encodeURIComponent(
     "Hello Maa Laxmi Travels, I want to inquire about Gopalganj bus tickets."
   )}`;
+
+  const upiId = "Q130365640@ybl";
+
+  const handleCopyUpi = () => {
+    navigator.clipboard.writeText(upiId);
+    setCopiedUpi(true);
+    setTimeout(() => setCopiedUpi(false), 2000);
+  };
 
   // Social Media Links
   const socialLinks = [
@@ -111,12 +122,12 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Contact & WhatsApp */}
+          {/* Contact, PhonePe QR & WhatsApp */}
           <div>
             <h4 className="text-white font-bold text-xs uppercase tracking-wider mb-4">
               Booking & Contact Number
             </h4>
-            <ul className="space-y-3 text-sm">
+            <ul className="space-y-3.5 text-sm">
               <li className="flex items-start space-x-3">
                 <Phone className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
                 <div>
@@ -126,6 +137,7 @@ export const Footer: React.FC = () => {
                   </a>
                 </div>
               </li>
+
               <li className="flex items-start space-x-3">
                 <MessageSquare className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
                 <div>
@@ -138,6 +150,60 @@ export const Footer: React.FC = () => {
                   >
                     Chat on 7488202225 ➔
                   </a>
+                </div>
+              </li>
+
+              {/* PhonePe / UPI QR Code Card */}
+              <li className="pt-2 border-t border-slate-800/80">
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3 space-y-2.5 shadow-md">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-1.5 text-xs font-bold text-purple-400">
+                      <QrCode className="w-4 h-4 text-purple-400" />
+                      <span>PhonePe / UPI QR Code</span>
+                    </div>
+
+                    <button
+                      onClick={handleCopyUpi}
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-950 text-purple-300 hover:bg-purple-900 border border-purple-800 transition flex items-center space-x-1 cursor-pointer"
+                      title="Copy UPI ID"
+                    >
+                      {copiedUpi ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-400" />
+                          <span className="text-emerald-400">Copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>UPI ID</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Clickable Image to Zoom Modal */}
+                  <div
+                    onClick={() => setShowQrModal(true)}
+                    className="relative w-full h-36 bg-white rounded-xl overflow-hidden cursor-pointer group shadow-sm border border-slate-700 hover:border-purple-500 transition"
+                  >
+                    <Image
+                      src="/maa-laxmi-phonepe-qr.jpg"
+                      alt="Maa Laxmi Travels PhonePe UPI QR Code"
+                      fill
+                      sizes="220px"
+                      className="object-contain p-1 group-hover:scale-105 transition duration-300"
+                    />
+                    <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/0 transition flex items-center justify-center">
+                      <span className="text-[10px] font-extrabold bg-slate-950/80 text-white px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition shadow-md flex items-center gap-1">
+                        <ExternalLink className="w-3 h-3" />
+                        Click to Scan / Enlarge
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+                    <span>UPI: <strong className="text-white font-sans">{upiId}</strong></span>
+                  </div>
                 </div>
               </li>
             </ul>
@@ -202,6 +268,61 @@ export const Footer: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* QR Code Zoom Modal */}
+      {showQrModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full relative shadow-2xl text-center space-y-4 border border-slate-200">
+            <button
+              onClick={() => setShowQrModal(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 transition cursor-pointer"
+              aria-label="Close QR Modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div>
+              <span className="text-xs font-extrabold text-purple-700 uppercase tracking-wider block">
+                Maa Laxmi Travels Official Payment QR
+              </span>
+              <h3 className="text-lg font-black text-slate-900">Scan & Pay with Any UPI App</h3>
+            </div>
+
+            <div className="relative w-64 h-80 mx-auto bg-white rounded-2xl border border-slate-200 p-2 shadow-inner">
+              <Image
+                src="/maa-laxmi-phonepe-qr.jpg"
+                alt="Maa Laxmi Travels PhonePe UPI QR Code"
+                fill
+                sizes="300px"
+                className="object-contain"
+              />
+            </div>
+
+            <div className="bg-slate-50 border border-slate-200 p-3 rounded-2xl flex items-center justify-between">
+              <div>
+                <span className="text-[10px] text-slate-400 uppercase font-bold block">UPI ID</span>
+                <span className="font-mono font-extrabold text-slate-900 text-sm">{upiId}</span>
+              </div>
+              <button
+                onClick={handleCopyUpi}
+                className="px-3 py-1.5 bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold rounded-xl transition flex items-center space-x-1.5 shadow-sm cursor-pointer"
+              >
+                {copiedUpi ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-300" />
+                    <span>Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Copy</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </footer>
   );
 };
