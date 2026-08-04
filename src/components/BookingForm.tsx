@@ -21,7 +21,8 @@ import {
   AlertCircle,
   CheckCircle2,
   Plus,
-  Minus
+  Minus,
+  Sparkles
 } from "lucide-react";
 import { bookingFormSchema, BookingFormData, BookingSubmissionData } from "@/types/booking";
 
@@ -67,12 +68,19 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSuccess }) => {
   const sleeperDisplay = typeof currentSleeperVal === "number" && !isNaN(currentSleeperVal) ? currentSleeperVal : 0;
   const totalSeatsSelected = seaterDisplay + sleeperDisplay;
 
+  // New Requested Moving Ticker Routes from Gopalganj
   const popularRoutes = [
-    { from: "Gopalganj", to: "Delhi" },
+    { from: "Gopalganj", to: "Siliguri" },
     { from: "Gopalganj", to: "Lucknow" },
-    { from: "Gopalganj", to: "Kanpur" },
-    { from: "Gopalganj", to: "Gorakhpur" },
+    { from: "Gopalganj", to: "Agra" },
+    { from: "Gopalganj", to: "Delhi" },
+    { from: "Gopalganj", to: "Jaipur" },
+    { from: "Gopalganj", to: "Nagpur" },
+    { from: "Gopalganj", to: "Bangalore" },
   ];
+
+  // Duplicated list for smooth infinite moving marquee loop
+  const marqueeRoutes = [...popularRoutes, ...popularRoutes];
 
   const handleRouteSelect = (from: string, to: string) => {
     setValue("pickupLocation", from, { shouldValidate: true });
@@ -132,7 +140,7 @@ ${data.additionalNotes ? `📝 *Notes:* ${data.additionalNotes}` : ""}`;
 
           {/* Header Info */}
           <div className="mb-6 sm:mb-8 border-b border-slate-200 pb-5 sm:pb-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col gap-4">
               <div className="flex items-start sm:items-center space-x-3">
                 <div className="relative w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-xl overflow-hidden border border-slate-200 p-0.5 bg-white shadow-xs">
                   <Image
@@ -156,21 +164,32 @@ ${data.additionalNotes ? `📝 *Notes:* ${data.additionalNotes}` : ""}`;
                 </div>
               </div>
 
-              {/* Scrollable Popular Routes Shortcuts for Mobile */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full no-scrollbar bg-slate-50 p-2 sm:p-2.5 rounded-xl border border-slate-200">
-                <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-400 uppercase px-1.5 shrink-0">
-                  Routes:
-                </span>
-                {popularRoutes.map((route, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => handleRouteSelect(route.from, route.to)}
-                    className="text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-red-500 hover:text-red-600 transition shadow-2xs cursor-pointer shrink-0"
-                  >
-                    {route.from} → {route.to}
-                  </button>
-                ))}
+              {/* Continuous Moving Marquee Routes Ticker */}
+              <div className="bg-slate-900 text-white rounded-xl p-2.5 overflow-hidden border border-slate-800 shadow-md">
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1 px-2.5 py-1 bg-red-600 rounded-lg text-[10px] sm:text-xs font-black tracking-wider uppercase shrink-0 shadow-sm">
+                    <Sparkles className="w-3 h-3 text-amber-300 animate-spin-slow" />
+                    <span>POPULAR ROUTES:</span>
+                  </div>
+
+                  {/* Moving Ticker Container */}
+                  <div className="overflow-hidden relative flex-1">
+                    <div className="animate-marquee flex items-center space-x-3">
+                      {marqueeRoutes.map((route, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => handleRouteSelect(route.from, route.to)}
+                          className="text-[11px] sm:text-xs font-bold px-3 py-1 rounded-lg bg-white/10 hover:bg-red-600 text-white border border-white/15 transition cursor-pointer shrink-0 flex items-center space-x-1"
+                        >
+                          <span className="text-orange-400 font-extrabold">{route.from}</span>
+                          <span className="text-slate-300">➔</span>
+                          <span className="text-white font-extrabold">{route.to}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
