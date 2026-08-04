@@ -51,9 +51,12 @@ export const Header: React.FC = () => {
               />
             </div>
 
-            <div className="min-w-0">
-              <span className="font-black text-lg sm:text-2xl lg:text-3xl tracking-tight uppercase text-red-600 truncate block">
+            <div className="min-w-0 flex flex-col leading-tight">
+              <span className="font-black text-base sm:text-2xl lg:text-3xl tracking-tight uppercase text-red-600 truncate">
                 MAA LAXMI TRAVELS
+              </span>
+              <span className="text-[11px] sm:text-xs font-black text-red-600 tracking-wide flex items-center gap-1">
+                🙏 !! जय माता दी !! 🙏
               </span>
             </div>
           </div>

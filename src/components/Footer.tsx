@@ -90,10 +90,10 @@ export const Footer: React.FC = () => {
                 />
               </div>
               <div>
-                <span className="font-black text-xl text-white tracking-tight uppercase">
-                  MAA LAXMI <span className="text-red-500">TRAVELS</span>
+                <span className="font-black text-xl text-red-600 tracking-tight uppercase">
+                  MAA LAXMI TRAVELS
                 </span>
-                <p className="text-[11px] text-red-400 font-bold">
+                <p className="text-xs font-black text-red-600 tracking-wide mt-0.5">
                   🙏 !! जय माता दी !! 🙏
                 </p>
               </div>
