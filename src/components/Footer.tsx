@@ -88,12 +88,8 @@ export const Footer: React.FC = () => {
               </div>
             </div>
 
-            <p className="text-slate-400 text-sm leading-relaxed">
-              Maa Laxmi Travels Gopalganj. Daily AC Seater and Sleeper express bus service between Gopalganj, Delhi, Lucknow, and major routes.
-            </p>
-
             {/* Social Media Link Icons */}
-            <div className="pt-2">
+            <div className="pt-1">
               <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider block mb-2.5">
                 Connect With Us On Social Media
               </span>
