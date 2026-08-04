@@ -69,9 +69,9 @@ export const HeroSection: React.FC = () => {
                   <MapPin className="w-5 h-5 text-red-600" />
                 </div>
                 <div>
-                  <span className="font-extrabold text-slate-900 block">Maa Laxmi Complex, Gopalganj</span>
+                  <span className="font-extrabold text-slate-900 block">Maa Laxmi Complex</span>
                   <span className="text-slate-500 text-xs font-medium">
-                    Banjari Pokhara, Shiv Mandir • Prop. Raju Kumar Singh
+                    Banjari Pokhara, Shiv Mandir
                   </span>
                 </div>
               </div>
