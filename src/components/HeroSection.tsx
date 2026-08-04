@@ -87,26 +87,22 @@ export const HeroSection: React.FC = () => {
               </a>
             </motion.div>
 
-            {/* Route & Bus Features Pills */}
+            {/* Bus Features Pills (Gopalganj -> Delhi badge removed) */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] sm:text-xs font-bold"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px] sm:text-xs font-bold"
             >
-              <div className="flex items-center justify-center space-x-1.5 py-2.5 px-2 rounded-xl bg-white border border-slate-200 text-slate-800 shadow-2xs">
-                <Bus className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                <span>Gopalganj ➔ Delhi</span>
-              </div>
-              <div className="flex items-center justify-center space-x-1.5 py-2.5 px-2 rounded-xl bg-white border border-slate-200 text-slate-800 shadow-2xs">
+              <div className="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl bg-white border border-slate-200 text-slate-800 shadow-2xs">
                 <Bus className="w-3.5 h-3.5 text-red-600 shrink-0" />
                 <span>Volvo AC Luxury</span>
               </div>
-              <div className="flex items-center justify-center space-x-1.5 py-2.5 px-2 rounded-xl bg-white border border-slate-200 text-slate-800 shadow-2xs">
+              <div className="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl bg-white border border-slate-200 text-slate-800 shadow-2xs">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 <span>Seater & Sleeper</span>
               </div>
-              <div className="flex items-center justify-center space-x-1.5 py-2.5 px-2 rounded-xl bg-white border border-slate-200 text-slate-800 shadow-2xs">
+              <div className="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl bg-white border border-slate-200 text-slate-800 shadow-2xs">
                 <MessageSquare className="w-3.5 h-3.5 text-sky-600 shrink-0" />
                 <span>WhatsApp Inquiry</span>
               </div>

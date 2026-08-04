@@ -28,9 +28,9 @@ export const Header: React.FC = () => {
           : "bg-white/90 backdrop-blur-md py-2.5 text-slate-900 border-b border-slate-200"
       }`}
     >
-      {/* Top Banner Tagline Strip with Daily Bus Services */}
-      <div className="bg-gradient-to-r from-red-600 via-orange-500 to-red-600 text-white text-[10px] sm:text-[11px] font-extrabold text-center py-1 px-2 tracking-wide uppercase shadow-xs">
-        🙏 !! जय माता दी !! • MAA LAXMI TRAVELS GOPALGANJ • DAILY BUS SERVICES • MO. 7488202225 🙏
+      {/* Top Banner Tagline Strip - Only Daily Bus Services */}
+      <div className="bg-gradient-to-r from-red-600 via-orange-500 to-red-600 text-white text-[10px] sm:text-[11px] font-extrabold text-center py-1 px-2 tracking-wider uppercase shadow-xs">
+        DAILY BUS SERVICES
       </div>
 
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-1">
