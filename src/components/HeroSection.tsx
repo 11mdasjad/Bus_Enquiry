@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Bus, MapPin, Sparkles, MessageSquare, ShieldCheck, Phone } from "lucide-react";
+import { MapPin, Sparkles, MessageSquare, ShieldCheck, Phone } from "lucide-react";
 
 export const HeroSection: React.FC = () => {
   const whatsAppNumber = "917488202225";
@@ -87,17 +87,13 @@ export const HeroSection: React.FC = () => {
               </a>
             </motion.div>
 
-            {/* Bus Features Pills (Gopalganj -> Delhi badge removed) */}
+            {/* Bus Features Pills (Seater & Sleeper, WhatsApp Inquiry) */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px] sm:text-xs font-bold"
+              className="grid grid-cols-2 gap-3 text-[11px] sm:text-xs font-bold"
             >
-              <div className="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl bg-white border border-slate-200 text-slate-800 shadow-2xs">
-                <Bus className="w-3.5 h-3.5 text-red-600 shrink-0" />
-                <span>Volvo AC Luxury</span>
-              </div>
               <div className="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl bg-white border border-slate-200 text-slate-800 shadow-2xs">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 <span>Seater & Sleeper</span>
