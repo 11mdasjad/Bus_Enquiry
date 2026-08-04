@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Phone, MessageSquare, MapPin } from "lucide-react";
+import { Phone, MessageSquare } from "lucide-react";
 
 export const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -52,15 +52,9 @@ export const Header: React.FC = () => {
             </div>
 
             <div className="min-w-0">
-              <div className="flex items-center space-x-1.5 truncate">
-                <span className="font-black text-base sm:text-xl lg:text-2xl tracking-tight uppercase text-blue-950 truncate">
-                  MAA LAXMI <span className="text-red-600">TRAVELS</span>
-                </span>
-              </div>
-              <p className="text-[10px] sm:text-[11px] font-semibold text-slate-600 flex items-center gap-0.5 truncate">
-                <MapPin className="w-3 h-3 text-red-500 shrink-0" />
-                <span className="truncate">Gopalganj • Prop. Raju Kumar Singh</span>
-              </p>
+              <span className="font-black text-lg sm:text-2xl lg:text-3xl tracking-tight uppercase text-red-600 truncate block">
+                MAA LAXMI TRAVELS
+              </span>
             </div>
           </div>
 
