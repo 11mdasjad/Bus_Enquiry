@@ -105,7 +105,7 @@ export const HeroSection: React.FC = () => {
             </motion.div>
           </div>
 
-          {/* Right Column: Clean White Volvo Bus Image Card */}
+          {/* Right Column: Clean White Bus Image Card */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -117,7 +117,7 @@ export const HeroSection: React.FC = () => {
               <div className="relative h-60 sm:h-80 w-full overflow-hidden bg-slate-100">
                 <Image
                   src="/volvo-bus-hero.png"
-                  alt="Maa Laxmi Travels Volvo Express Bus"
+                  alt="Maa Laxmi Travels Luxury Express Bus"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover object-center group-hover:scale-105 transition duration-700"

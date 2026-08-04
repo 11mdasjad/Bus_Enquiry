@@ -41,7 +41,7 @@ export const Footer: React.FC = () => {
             </div>
 
             <p className="text-slate-400 text-sm leading-relaxed">
-              Maa Laxmi Travels Gopalganj. Daily Volvo AC Seater and Sleeper express bus service between Gopalganj, Delhi, Lucknow, and major routes.
+              Maa Laxmi Travels Gopalganj. Daily AC Seater and Sleeper express bus service between Gopalganj, Delhi, Lucknow, and major routes.
             </p>
 
             <div className="flex items-center space-x-3 text-sm pt-1">

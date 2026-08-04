@@ -51,7 +51,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSuccess }) => {
       journeyDate: todayStr,
       seaterCount: 1,
       sleeperCount: 0,
-      busType: "Volvo AC",
+      busType: "AC Luxury",
       gender: "Male",
       pickupAddress: "",
       additionalNotes: "",
@@ -104,7 +104,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSuccess }) => {
 🏁 *To:* ${data.destination}
 📅 *Date of Visit:* ${data.journeyDate}
 💺 *Total Seat / Sleeper:* ${seatsFormatted}
-🚌 *Bus Type:* Volvo AC
+🚌 *Bus Type:* AC Luxury
 👤 *Gender:* ${data.gender}
 🏠 *Pickup Address:* ${data.pickupAddress}
 ${data.additionalNotes ? `📝 *Notes:* ${data.additionalNotes}` : ""}`;
@@ -113,7 +113,7 @@ ${data.additionalNotes ? `📝 *Notes:* ${data.additionalNotes}` : ""}`;
 
     const submission: BookingSubmissionData = {
       ...data,
-      busType: "Volvo AC",
+      busType: "AC Luxury",
       inquiryId,
       submittedAt: new Date().toLocaleString(),
       whatsAppUrl,
@@ -473,14 +473,14 @@ ${data.additionalNotes ? `📝 *Notes:* ${data.additionalNotes}` : ""}`;
 
               {/* Row 2: Bus Type & Gender Selection */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-200/80 pt-4">
-                {/* Bus Type (Exclusive Volvo AC) */}
+                {/* Bus Type */}
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
                     Bus Type <span className="text-red-500">*</span>
                   </label>
                   <div className="w-full py-2.5 px-3 rounded-xl border border-blue-600 bg-blue-50 text-blue-800 font-extrabold flex items-center justify-center space-x-2 shadow-2xs">
                     <Snowflake className="w-4 h-4 text-blue-600 animate-spin-slow shrink-0" />
-                    <span className="text-xs sm:text-sm">Volvo AC Luxury Coach</span>
+                    <span className="text-xs sm:text-sm">AC Luxury Coach</span>
                   </div>
                 </div>
 
