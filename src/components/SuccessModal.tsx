@@ -40,38 +40,38 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ submission, onClose 
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-slate-950/80 backdrop-blur-md">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-slate-950/80 backdrop-blur-md">
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ duration: 0.3 }}
-          className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden relative my-8"
+          className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden relative my-auto max-h-[92vh] flex flex-col"
         >
           {/* Header Banner - MAA LAXMI TRAVELS */}
-          <div className="bg-gradient-to-r from-blue-900 via-red-600 to-orange-500 p-6 sm:p-8 text-white relative">
+          <div className="bg-gradient-to-r from-blue-900 via-red-600 to-orange-500 p-5 sm:p-8 text-white relative shrink-0">
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 text-white/80 hover:text-white p-2 rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer"
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 text-white/80 hover:text-white p-1.5 rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer"
               aria-label="Close modal"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
 
-            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-white text-emerald-600 flex items-center justify-center shadow-lg shrink-0">
-                <CheckCircle2 className="w-10 h-10" />
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 sm:gap-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-white text-emerald-600 flex items-center justify-center shadow-lg shrink-0">
+                <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10" />
               </div>
 
               <div>
-                <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 text-xs font-bold uppercase tracking-wider mb-2">
-                  <Sparkles className="w-3.5 h-3.5" />
+                <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-1.5">
+                  <Sparkles className="w-3 h-3 text-orange-300" />
                   <span>🙏 !! जय माता दी !! • MAA LAXMI TRAVELS</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-black tracking-tight">
+                <h3 className="text-xl sm:text-3xl font-black tracking-tight">
                   Inquiry Sent to WhatsApp!
                 </h3>
-                <p className="text-blue-100 text-sm mt-1">
+                <p className="text-blue-100 text-xs sm:text-sm mt-1">
                   Your travel details are ready. Click below to chat directly with Raju Kumar Singh at{" "}
                   <span className="font-bold underline">7488202225</span>.
                 </p>
@@ -80,69 +80,69 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ submission, onClose 
           </div>
 
           {/* Modal Body */}
-          <div className="p-6 sm:p-8 space-y-6">
+          <div className="p-4 sm:p-8 space-y-4 sm:space-y-6 overflow-y-auto">
             {/* Ticket Inquiry Reference ID */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
               <div>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider block">
                   TICKET / INQUIRY NO.
                 </span>
-                <span className="text-2xl font-black text-red-600 tracking-wider font-mono">
+                <span className="text-xl sm:text-2xl font-black text-red-600 tracking-wider font-mono">
                   {submission.inquiryId}
                 </span>
               </div>
 
-              <div className="flex items-center space-x-2 text-xs font-bold text-slate-700 bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-2xs">
-                <Phone className="w-4 h-4 text-emerald-600" />
+              <div className="flex items-center space-x-2 text-xs font-bold text-slate-700 bg-white px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 shadow-2xs">
+                <Phone className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 <span>Operator WhatsApp: 7488202225</span>
               </div>
             </div>
 
-            {/* Passenger Details Summary Grid matching the banner */}
+            {/* Passenger Details Summary Grid */}
             <div>
-              <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">
+              <h4 className="text-[11px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2.5">
                 Passenger Details
               </h4>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 bg-slate-50/70 p-4 rounded-2xl border border-slate-200 text-sm">
-                <div className="flex items-start space-x-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3.5 bg-slate-50/70 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200 text-xs sm:text-sm">
+                <div className="flex items-start space-x-2.5">
                   <User className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
                   <div>
-                    <span className="text-xs text-slate-400 block">Passenger Name</span>
+                    <span className="text-[10px] sm:text-xs text-slate-400 block">Passenger Name</span>
                     <span className="font-bold text-slate-900">{submission.fullName}</span>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-3">
+                <div className="flex items-start space-x-2.5">
                   <Phone className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
                   <div>
-                    <span className="text-xs text-slate-400 block">Mobile Number</span>
+                    <span className="text-[10px] sm:text-xs text-slate-400 block">Mobile Number</span>
                     <span className="font-bold text-slate-900">{submission.mobileNumber}</span>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-3">
+                <div className="flex items-start space-x-2.5">
                   <MapPin className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
                   <div>
-                    <span className="text-xs text-slate-400 block">From ➔ To</span>
+                    <span className="text-[10px] sm:text-xs text-slate-400 block">From ➔ To</span>
                     <span className="font-bold text-slate-900">
                       {submission.pickupLocation} ➔ {submission.destination}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-3">
+                <div className="flex items-start space-x-2.5">
                   <Calendar className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
                   <div>
-                    <span className="text-xs text-slate-400 block">Date of Visit</span>
+                    <span className="text-[10px] sm:text-xs text-slate-400 block">Date of Visit</span>
                     <span className="font-bold text-slate-900">{submission.journeyDate}</span>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-3">
+                <div className="flex items-start space-x-2.5">
                   <Armchair className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
                   <div>
-                    <span className="text-xs text-slate-400 block">Total Seat / Sleeper</span>
+                    <span className="text-[10px] sm:text-xs text-slate-400 block">Total Seat / Sleeper</span>
                     <span className="font-bold text-slate-900">
                       {submission.seaterCount > 0 ? `${submission.seaterCount} Seat 💺` : ""}
                       {submission.seaterCount > 0 && submission.sleeperCount > 0 ? " • " : ""}
@@ -151,10 +151,10 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ submission, onClose 
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-3">
+                <div className="flex items-start space-x-2.5">
                   <Bus className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
                   <div>
-                    <span className="text-xs text-slate-400 block">Bus Type & Gender</span>
+                    <span className="text-[10px] sm:text-xs text-slate-400 block">Bus Type & Gender</span>
                     <span className="font-bold text-slate-900">
                       {submission.busType} ({submission.gender})
                     </span>
@@ -168,17 +168,17 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ submission, onClose 
               href={submission.whatsAppUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-base flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/30 transition transform active:scale-98"
+              className="w-full py-3.5 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm sm:text-base flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/30 transition transform active:scale-98"
             >
-              <MessageSquare className="w-5 h-5" />
-              <span>Open WhatsApp Chat (Mo. 7488202225)</span>
+              <MessageSquare className="w-5 h-5 shrink-0" />
+              <span>Open WhatsApp Chat (7488202225)</span>
             </a>
 
             {/* Print & Reset Buttons */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3 pt-1">
               <button
                 onClick={() => window.print()}
-                className="w-full sm:w-1/2 py-3 px-4 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold text-sm flex items-center justify-center space-x-2 transition cursor-pointer"
+                className="w-full sm:w-1/2 py-2.5 sm:py-3 px-4 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 transition cursor-pointer"
               >
                 <Printer className="w-4 h-4" />
                 <span>Print Ticket Inquiry</span>
@@ -186,7 +186,7 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ submission, onClose 
 
               <button
                 onClick={onClose}
-                className="w-full sm:w-1/2 py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm flex items-center justify-center space-x-2 transition cursor-pointer"
+                className="w-full sm:w-1/2 py-2.5 sm:py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 transition cursor-pointer"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>New Inquiry</span>
