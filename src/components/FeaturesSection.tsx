@@ -9,10 +9,10 @@ export const FeaturesSection: React.FC = () => {
     {
       icon: Bus,
       iconBg: "bg-blue-50 text-blue-600 border-blue-100",
-      title: "Volvo AC & Non-AC Fleet",
+      title: "Volvo AC Luxury Fleet",
       description:
-        "Premium Volvo buses connecting Gopalganj directly to Delhi, Lucknow, Kanpur, and major routes with maximum riding comfort.",
-      highlights: ["Volvo Luxury Coaches", "Cleaned & Sanitized", "Smooth Express Highway Travel"],
+        "Premium Volvo AC luxury buses connecting Gopalganj directly to Delhi, Lucknow, Kanpur, and major routes with maximum riding comfort.",
+      highlights: ["Volvo AC Luxury Coaches", "Cleaned & Sanitized", "Smooth Express Highway Travel"],
     },
     {
       icon: Armchair,
@@ -53,7 +53,7 @@ export const FeaturesSection: React.FC = () => {
             Why Travel With Maa Laxmi Travels
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-            Providing trusted, comfortable, and safe bus travel services between Gopalganj, Bihar, and major North Indian destinations.
+            Providing trusted, comfortable, and safe Volvo AC bus travel services between Gopalganj, Bihar, and major North Indian destinations.
           </p>
         </div>
 

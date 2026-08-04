@@ -27,9 +27,7 @@ export const bookingFormSchema = z.object({
     .number({ invalid_type_error: "Sleeper count is required" })
     .min(0, { message: "Sleeper count cannot be negative" })
     .max(20, { message: "Max 20 sleeper berths per inquiry" }),
-  busType: z.enum(["Volvo AC", "Non-AC"], {
-    required_error: "Please select bus type",
-  }),
+  busType: z.string(),
   gender: z.enum(["Male", "Female", "Other"], {
     required_error: "Please select gender",
   }),

@@ -12,7 +12,6 @@ import {
   Navigation,
   Calendar,
   Snowflake,
-  Wind,
   Armchair,
   Bed,
   Home,
@@ -59,7 +58,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSuccess }) => {
     },
   });
 
-  const selectedBusType = watch("busType");
   const selectedGender = watch("gender");
   const currentSeaterVal = watch("seaterCount");
   const currentSleeperVal = watch("sleeperCount");
@@ -68,7 +66,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSuccess }) => {
   const sleeperDisplay = typeof currentSleeperVal === "number" && !isNaN(currentSleeperVal) ? currentSleeperVal : 0;
   const totalSeatsSelected = seaterDisplay + sleeperDisplay;
 
-  // New Requested Moving Ticker Routes from Gopalganj
+  // Requested Moving Ticker Routes from Gopalganj
   const popularRoutes = [
     { from: "Gopalganj", to: "Siliguri" },
     { from: "Gopalganj", to: "Lucknow" },
@@ -106,7 +104,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSuccess }) => {
 🏁 *To:* ${data.destination}
 📅 *Date of Visit:* ${data.journeyDate}
 💺 *Total Seat / Sleeper:* ${seatsFormatted}
-🚌 *Bus Type:* ${data.busType}
+🚌 *Bus Type:* Volvo AC
 👤 *Gender:* ${data.gender}
 🏠 *Pickup Address:* ${data.pickupAddress}
 ${data.additionalNotes ? `📝 *Notes:* ${data.additionalNotes}` : ""}`;
@@ -115,6 +113,7 @@ ${data.additionalNotes ? `📝 *Notes:* ${data.additionalNotes}` : ""}`;
 
     const submission: BookingSubmissionData = {
       ...data,
+      busType: "Volvo AC",
       inquiryId,
       submittedAt: new Date().toLocaleString(),
       whatsAppUrl,
@@ -363,7 +362,7 @@ ${data.additionalNotes ? `📝 *Notes:* ${data.additionalNotes}` : ""}`;
               </div>
             </div>
 
-            {/* Section 3: Clean, Mobile-Friendly Seat & Sleeper Counter Cards */}
+            {/* Section 3: Total Seat / Sleeper Count & Bus Preference */}
             <div className="p-4 sm:p-6 bg-slate-50/80 rounded-xl sm:rounded-2xl border border-slate-200/80 space-y-4 sm:space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
                 <h3 className="text-xs sm:text-sm font-extrabold text-blue-950 uppercase tracking-wider flex items-center gap-2">
@@ -381,7 +380,7 @@ ${data.additionalNotes ? `📝 *Notes:* ${data.additionalNotes}` : ""}`;
                 </div>
               </div>
 
-              {/* Row 1: Mobile-Friendly Seater & Sleeper Counter Cards */}
+              {/* Row 1: Side-by-Side Seater & Sleeper Counter Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {/* Seater Count Card */}
                 <div className="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between gap-2">
@@ -474,37 +473,14 @@ ${data.additionalNotes ? `📝 *Notes:* ${data.additionalNotes}` : ""}`;
 
               {/* Row 2: Bus Type & Gender Selection */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-200/80 pt-4">
-                {/* Bus Type */}
+                {/* Bus Type (Exclusive Volvo AC) */}
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Bus Type Option <span className="text-red-500">*</span>
+                    Bus Type <span className="text-red-500">*</span>
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setValue("busType", "Volvo AC", { shouldValidate: true })}
-                      className={`flex items-center justify-center space-x-1.5 py-2.5 px-2 rounded-xl border font-bold transition cursor-pointer ${
-                        selectedBusType === "Volvo AC"
-                          ? "border-blue-600 bg-blue-50 text-blue-700 ring-2 ring-blue-500/20 shadow-2xs"
-                          : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                      }`}
-                    >
-                      <Snowflake className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                      <span className="text-xs">Volvo AC</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setValue("busType", "Non-AC", { shouldValidate: true })}
-                      className={`flex items-center justify-center space-x-1.5 py-2.5 px-2 rounded-xl border font-bold transition cursor-pointer ${
-                        selectedBusType === "Non-AC"
-                          ? "border-blue-600 bg-blue-50 text-blue-700 ring-2 ring-blue-500/20 shadow-2xs"
-                          : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                      }`}
-                    >
-                      <Wind className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                      <span className="text-xs">Non-AC</span>
-                    </button>
+                  <div className="w-full py-2.5 px-3 rounded-xl border border-blue-600 bg-blue-50 text-blue-800 font-extrabold flex items-center justify-center space-x-2 shadow-2xs">
+                    <Snowflake className="w-4 h-4 text-blue-600 animate-spin-slow shrink-0" />
+                    <span className="text-xs sm:text-sm">Volvo AC Luxury Coach</span>
                   </div>
                 </div>
 

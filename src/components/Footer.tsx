@@ -18,7 +18,7 @@ export const Footer: React.FC = () => {
     <footer className="bg-slate-950 text-slate-300 pt-16 pb-12 border-t border-slate-800 relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
-          {/* Company Branding with Official Bus Ticket Logo */}
+          {/* Company Branding */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <div className="relative w-12 h-12 shrink-0 rounded-xl overflow-hidden bg-white p-1 shadow-md border border-slate-200">
@@ -26,6 +26,7 @@ export const Footer: React.FC = () => {
                   src="/bus-ticket-logo.png"
                   alt="Bus Ticket Logo"
                   fill
+                  sizes="48px"
                   className="object-contain"
                 />
               </div>
@@ -40,7 +41,7 @@ export const Footer: React.FC = () => {
             </div>
 
             <p className="text-slate-400 text-sm leading-relaxed">
-              Maa Laxmi Travels Gopalganj. Daily Volvo AC & Non-AC Seater and Sleeper express bus service between Gopalganj, Delhi, Lucknow, and major routes.
+              Maa Laxmi Travels Gopalganj. Daily Volvo AC Seater and Sleeper express bus service between Gopalganj, Delhi, Lucknow, and major routes.
             </p>
 
             <div className="flex items-center space-x-3 text-sm pt-1">
