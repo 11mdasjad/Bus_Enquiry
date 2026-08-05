@@ -36,18 +36,26 @@ export async function POST(req: NextRequest) {
 
       if (imageFile && imageFile instanceof File && imageFile.size > 0) {
         const buffer = Buffer.from(await imageFile.arrayBuffer());
-        const uploadsDir = path.join(process.cwd(), "public", "uploads");
+        
+        // 1. Create Base64 data URL for universal Vercel & client compatibility
+        const mimeType = imageFile.type || "image/png";
+        const base64Str = buffer.toString("base64");
+        imageUrl = `data:${mimeType};base64,${base64Str}`;
 
-        if (!fs.existsSync(uploadsDir)) {
-          fs.mkdirSync(uploadsDir, { recursive: true });
+        // 2. Also try writing file to public/uploads/ if local filesystem is writable
+        try {
+          const uploadsDir = path.join(process.cwd(), "public", "uploads");
+          if (!fs.existsSync(uploadsDir)) {
+            fs.mkdirSync(uploadsDir, { recursive: true });
+          }
+          const ext = path.extname(imageFile.name) || ".png";
+          const fileName = `banner-${Date.now()}${ext}`;
+          const filePath = path.join(uploadsDir, fileName);
+          fs.writeFileSync(filePath, buffer);
+          imageUrl = `/uploads/${fileName}`;
+        } catch (fsErr) {
+          console.warn("Read-only filesystem on Vercel, using base64 image URL:", fsErr);
         }
-
-        const ext = path.extname(imageFile.name) || ".png";
-        const fileName = `banner-${Date.now()}${ext}`;
-        const filePath = path.join(uploadsDir, fileName);
-
-        fs.writeFileSync(filePath, buffer);
-        imageUrl = `/uploads/${fileName}`;
       }
 
       updatedBanner = {
@@ -66,6 +74,7 @@ export async function POST(req: NextRequest) {
       };
     }
 
+    // Save banner data (in-memory + /tmp + data/banner.json)
     saveBannerData(updatedBanner);
 
     return NextResponse.json({
