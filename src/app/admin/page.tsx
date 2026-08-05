@@ -70,12 +70,38 @@ export default function AdminBannerPage() {
     }, 3500);
   };
 
-  const fileToBase64 = (file: File): Promise<string> => {
+  // Client-side image compression to ensure tiny payload size (< 300KB) for Vercel
+  const compressImage = (file: File, maxWidth = 1600, quality = 0.85): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
+      reader.onload = (event) => {
+        const img = new window.Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            resolve(event.target?.result as string);
+            return;
+          }
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL("image/webp", quality);
+          resolve(compressedDataUrl);
+        };
+        img.onerror = (err) => reject(err);
+      };
+      reader.onerror = (err) => reject(err);
     });
   };
 
@@ -115,7 +141,7 @@ export default function AdminBannerPage() {
     try {
       let finalImageUrl = currentImageUrl;
       if (selectedFile) {
-        finalImageUrl = await fileToBase64(selectedFile);
+        finalImageUrl = await compressImage(selectedFile);
       }
 
       const payload: BannerData = {
@@ -135,9 +161,9 @@ export default function AdminBannerPage() {
         body: JSON.stringify(payload),
       });
 
-      const result = await res.json();
+      const result = await res.json().catch(() => null);
 
-      if (res.ok && result.success && result.banner) {
+      if (res.ok && result?.success && result?.banner) {
         const b: BannerData = result.banner;
         setHeading(b.heading);
         setDescription(b.description);
@@ -150,7 +176,7 @@ export default function AdminBannerPage() {
 
         showToast("Banner updated successfully!", "success");
       } else {
-        showToast(result.message || "Failed to save banner", "error");
+        showToast(result?.message || `Server returned error (${res.status})`, "error");
       }
     } catch (err) {
       console.error("Save banner error:", err);
@@ -240,7 +266,7 @@ export default function AdminBannerPage() {
                   <ImageIcon className="w-4 h-4 text-red-600" />
                   <span>1. Banner Image Upload</span>
                 </label>
-                <span className="text-xs text-slate-400 font-medium">PNG, JPG, WEBP (Max 5MB)</span>
+                <span className="text-xs text-slate-400 font-medium">PNG, JPG, WEBP (Auto-optimized)</span>
               </div>
 
               {/* Drag & Drop Area */}
