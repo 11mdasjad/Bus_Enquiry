@@ -95,19 +95,23 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSuccess }) => {
       data.seaterCount > 0 && data.sleeperCount > 0 ? " + " : ""
     }${data.sleeperCount > 0 ? `${data.sleeperCount} Sleeper(s) 🛌` : ""}`;
 
-    const rawMessage = `*MAA LAXMI TRAVELS - BUS INQUIRY* 🚌
-*Ticket/Inquiry No:* ${inquiryId}
-----------------------------------
-👤 *Passenger Name:* ${data.fullName}
+    const rawMessage = `*🚌 MAA LAXMI TRAVELS - FULL CUSTOMER TICKET INQUIRY*
+---------------------------------------------
+📋 *Inquiry Ref No:* ${inquiryId}
+👤 *Customer Full Name:* ${data.fullName}
 📱 *Mobile Number:* ${data.mobileNumber}
-📍 *From:* ${data.pickupLocation}
-🏁 *To:* ${data.destination}
-📅 *Date of Visit:* ${data.journeyDate}
+📍 *From (Pickup Location):* ${data.pickupLocation}
+🏁 *To (Destination City):* ${data.destination}
+📅 *Date of Journey / Visit:* ${data.journeyDate}
 💺 *Total Seat / Sleeper:* ${seatsFormatted}
-🚌 *Bus Type:* AC Luxury
+🚌 *Bus Coach Category:* AC Luxury Seater/Sleeper Express
 👤 *Gender:* ${data.gender}
-🏠 *Pickup Address:* ${data.pickupAddress}
-${data.additionalNotes ? `📝 *Notes:* ${data.additionalNotes}` : ""}`;
+🏠 *Full Pickup Address:* ${data.pickupAddress}
+${data.additionalNotes ? `📝 *Additional Notes / Requests:* ${data.additionalNotes}` : ""}
+---------------------------------------------
+🙏 *Maa Laxmi Travels Gopalganj*
+📞 *Operator Contact:* 7488202225
+🌐 *Website:* www.maalaxmitravels.in`;
 
     const whatsAppUrl = `https://wa.me/${whatsAppNumber}?text=${encodeURIComponent(rawMessage)}`;
 

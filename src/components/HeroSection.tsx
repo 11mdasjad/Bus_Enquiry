@@ -99,16 +99,23 @@ export const HeroSection: React.FC = () => {
                 <span>Call: 7488202225</span>
               </a>
 
-              <a
-                href={directWhatsAppUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black transition shadow-md shadow-emerald-900/40 flex items-center justify-center space-x-1.5"
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const el = document.getElementById("booking-form");
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth" });
+                    setTimeout(() => {
+                      const input = document.getElementById("fullName");
+                      if (input) input.focus();
+                    }, 400);
+                  }
+                }}
+                className="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black transition shadow-md shadow-emerald-900/40 flex items-center justify-center space-x-1.5 cursor-pointer"
               >
                 <MessageSquare className="w-3.5 h-3.5" />
-                <span>WhatsApp</span>
-              </a>
+                <span>WhatsApp Inquiry</span>
+              </button>
             </div>
           </div>
         </motion.div>

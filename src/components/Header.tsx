@@ -71,16 +71,23 @@ export const Header: React.FC = () => {
               <span>7488202225</span>
             </a>
 
-            <a
-              href={directWhatsAppUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => {
+                const el = document.getElementById("booking-form");
+                if (el) {
+                  el.scrollIntoView({ behavior: "smooth" });
+                  setTimeout(() => {
+                    const input = document.getElementById("fullName");
+                    if (input) input.focus();
+                  }, 400);
+                }
+              }}
               className="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl shadow-md shadow-emerald-600/20 transition transform active:scale-95 flex items-center space-x-1 sm:space-x-1.5 cursor-pointer"
             >
               <MessageSquare className="w-4 h-4" />
-              <span className="hidden xs:inline">WhatsApp</span>
+              <span className="hidden xs:inline">WhatsApp Inquiry</span>
               <span className="xs:hidden">Inquiry</span>
-            </a>
+            </button>
           </div>
         </div>
       </div>
