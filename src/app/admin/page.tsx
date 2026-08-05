@@ -12,9 +12,7 @@ import {
   EyeOff,
   ArrowLeft,
   Sparkles,
-  Link as LinkIcon,
   Type,
-  FileText,
   ImageIcon
 } from "lucide-react";
 import { BannerData } from "@/lib/banner-types";
@@ -45,7 +43,7 @@ export default function AdminBannerPage() {
   const fetchBannerData = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/banner");
+      const res = await fetch("/api/banner", { cache: "no-store" });
       const data = await res.json();
       if (data.success && data.banner) {
         const b: BannerData = data.banner;
@@ -70,6 +68,15 @@ export default function AdminBannerPage() {
     setTimeout(() => {
       setToastMessage(null);
     }, 3500);
+  };
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
   };
 
   const handleFileChange = (file: File | null) => {
@@ -106,26 +113,31 @@ export default function AdminBannerPage() {
     setIsSaving(true);
 
     try {
-      const formData = new FormData();
-      formData.append("heading", heading);
-      formData.append("description", description);
-      formData.append("buttonText", buttonText);
-      formData.append("buttonLink", buttonLink);
-      formData.append("showBanner", showBanner ? "true" : "false");
-      formData.append("imageUrl", currentImageUrl);
-
+      let finalImageUrl = currentImageUrl;
       if (selectedFile) {
-        formData.append("imageFile", selectedFile);
+        finalImageUrl = await fileToBase64(selectedFile);
       }
+
+      const payload: BannerData = {
+        heading,
+        description,
+        buttonText,
+        buttonLink,
+        showBanner,
+        imageUrl: finalImageUrl,
+      };
 
       const res = await fetch("/api/banner", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
 
       const result = await res.json();
 
-      if (result.success && result.banner) {
+      if (res.ok && result.success && result.banner) {
         const b: BannerData = result.banner;
         setHeading(b.heading);
         setDescription(b.description);
@@ -274,17 +286,15 @@ export default function AdminBannerPage() {
                 <label htmlFor="heading" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                   Banner Heading
                 </label>
-                <div className="relative">
-                  <input
-                    id="heading"
-                    type="text"
-                    required
-                    value={heading}
-                    onChange={(e) => setHeading(e.target.value)}
-                    placeholder="e.g. Book Your Bus Journey"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-600 focus:border-red-600 transition placeholder:text-slate-400 font-semibold"
-                  />
-                </div>
+                <input
+                  id="heading"
+                  type="text"
+                  required
+                  value={heading}
+                  onChange={(e) => setHeading(e.target.value)}
+                  placeholder="e.g. Book Your Bus Journey"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-600 focus:border-red-600 transition placeholder:text-slate-400 font-semibold"
+                />
               </div>
 
               {/* Banner Description */}
@@ -325,17 +335,15 @@ export default function AdminBannerPage() {
                   <label htmlFor="buttonLink" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                     Button Link
                   </label>
-                  <div className="relative">
-                    <input
-                      id="buttonLink"
-                      type="text"
-                      required
-                      value={buttonLink}
-                      onChange={(e) => setButtonLink(e.target.value)}
-                      placeholder="e.g. #booking-form"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-600 focus:border-red-600 transition font-semibold"
-                    />
-                  </div>
+                  <input
+                    id="buttonLink"
+                    type="text"
+                    required
+                    value={buttonLink}
+                    onChange={(e) => setButtonLink(e.target.value)}
+                    placeholder="e.g. #booking-form"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-600 focus:border-red-600 transition font-semibold"
+                  />
                 </div>
               </div>
 

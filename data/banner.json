@@ -1,8 +1,8 @@
 {
-  "imageUrl": "/maa-laxmi-travels-banner.png",
   "heading": "Book Your Bus Journey",
   "description": "Daily AC Seater & Sleeper Bus Services from Gopalganj to All Major Destinations.",
   "buttonText": "Book Ticket",
   "buttonLink": "#booking-form",
-  "showBanner": true
+  "showBanner": true,
+  "imageUrl": "/uploads/banner-1785917870163.png"
 }
