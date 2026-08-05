@@ -46,7 +46,7 @@ export const bookingFormSchema = z.object({
 export type BookingFormData = z.infer<typeof bookingFormSchema>;
 
 export interface BookingSubmissionData extends BookingFormData {
-  inquiryId: string;
+  inquiryId?: string;
   submittedAt: string;
   whatsAppUrl: string;
 }

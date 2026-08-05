@@ -89,15 +89,12 @@ export const BookingForm: React.FC<BookingFormProps> = ({ onSuccess }) => {
     setIsSubmitting(true);
     await new Promise((resolve) => setTimeout(resolve, 600));
 
-    const inquiryId = "MLT-" + Math.floor(100 + Math.random() * 900);
-
     const seatsFormatted = `${data.seaterCount > 0 ? `${data.seaterCount} Seat(s) 💺` : ""}${
       data.seaterCount > 0 && data.sleeperCount > 0 ? " + " : ""
     }${data.sleeperCount > 0 ? `${data.sleeperCount} Sleeper(s) 🛌` : ""}`;
 
-    const rawMessage = `*🚌 MAA LAXMI TRAVELS - FULL CUSTOMER TICKET INQUIRY*
+    const rawMessage = `*🚌 MAA LAXMI TRAVELS - FULL CUSTOMER TICKET BOOKING*
 ---------------------------------------------
-📋 *Inquiry Ref No:* ${inquiryId}
 👤 *Customer Full Name:* ${data.fullName}
 📱 *Mobile Number:* ${data.mobileNumber}
 📍 *From (Pickup Location):* ${data.pickupLocation}
@@ -118,7 +115,6 @@ ${data.additionalNotes ? `📝 *Additional Notes / Requests:* ${data.additionalN
     const submission: BookingSubmissionData = {
       ...data,
       busType: "AC Luxury",
-      inquiryId,
       submittedAt: new Date().toLocaleString(),
       whatsAppUrl,
     };

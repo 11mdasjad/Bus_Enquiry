@@ -52,7 +52,7 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ submission, onClose 
     try {
       const dataUrl = await toPng(ticketRef.current, { quality: 0.95, cacheBust: true });
       const link = document.createElement("a");
-      link.download = `Maa_Laxmi_Travels_Ticket_${submission.inquiryId}.png`;
+      link.download = `Maa_Laxmi_Travels_Bus_Ticket.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -133,11 +133,9 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({ submission, onClose 
                 </div>
 
                 <div className="text-right">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
-                    TICKET / BOOKING NO.
-                  </span>
-                  <span className="text-base sm:text-lg font-black text-red-600 font-mono tracking-wider">
-                    {submission.inquiryId}
+                  <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] sm:text-xs font-black uppercase tracking-wider">
+                    <ShieldCheck className="w-3 h-3 text-emerald-600 shrink-0" />
+                    <span>BUS TICKET PASS</span>
                   </span>
                 </div>
               </div>
