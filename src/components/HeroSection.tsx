@@ -1,17 +1,54 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Phone, MessageSquare, Sparkles, MapPin, Maximize2, X } from "lucide-react";
+import { BannerData, defaultBannerData } from "@/lib/banner-types";
 
 export const HeroSection: React.FC = () => {
+  const [banner, setBanner] = useState<BannerData>(defaultBannerData);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const whatsAppNumber = "917488202225";
-  const directWhatsAppUrl = `https://wa.me/${whatsAppNumber}?text=${encodeURIComponent(
-    "Hello Maa Laxmi Travels, I want to inquire about Gopalganj bus tickets."
-  )}`;
+  useEffect(() => {
+    fetchBanner();
+  }, []);
+
+  const fetchBanner = async () => {
+    try {
+      const res = await fetch("/api/banner", { cache: "no-store" });
+      const data = await res.json();
+      if (data.success && data.banner) {
+        setBanner(data.banner);
+      }
+    } catch (err) {
+      console.error("Failed to fetch banner data in HeroSection:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // If showBanner is disabled, render nothing
+  if (!isLoading && banner.showBanner === false) {
+    return null;
+  }
+
+  const handleButtonClick = () => {
+    if (banner.buttonLink.startsWith("#")) {
+      const targetId = banner.buttonLink.substring(1);
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+        setTimeout(() => {
+          const input = document.getElementById("fullName");
+          if (input) input.focus();
+        }, 400);
+      }
+    } else {
+      window.location.href = banner.buttonLink;
+    }
+  };
 
   return (
     <section className="relative pt-24 pb-8 sm:pt-32 sm:pb-12 bg-slate-950 text-white border-b border-slate-800 overflow-hidden">
@@ -38,14 +75,11 @@ export const HeroSection: React.FC = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white uppercase drop-shadow-md"
           >
-            Book Your{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-orange-400 to-amber-400">
-              Bus Journey
-            </span>
+            {banner.heading}
           </motion.h1>
 
           <p className="text-xs sm:text-base text-slate-300 font-medium max-w-xl mx-auto">
-            Daily AC Seater & Sleeper Bus Services from Gopalganj to All Major North & South Indian Destinations.
+            {banner.description}
           </p>
         </div>
 
@@ -63,8 +97,8 @@ export const HeroSection: React.FC = () => {
           {/* Banner Image Display - Fitted Responsive Height & Aspect Ratio */}
           <div className="relative w-full aspect-[2.35/1] bg-slate-950 min-h-[160px] sm:min-h-[280px]">
             <Image
-              src="/maa-laxmi-travels-banner.png"
-              alt="Maa Laxmi Travels Official Bus Ticket Booking Banner"
+              src={banner.imageUrl || "/maa-laxmi-travels-banner.png"}
+              alt={banner.heading}
               fill
               priority
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 95vw, 1200px"
@@ -102,19 +136,12 @@ export const HeroSection: React.FC = () => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  const el = document.getElementById("booking-form");
-                  if (el) {
-                    el.scrollIntoView({ behavior: "smooth" });
-                    setTimeout(() => {
-                      const input = document.getElementById("fullName");
-                      if (input) input.focus();
-                    }, 400);
-                  }
+                  handleButtonClick();
                 }}
                 className="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black transition shadow-md shadow-emerald-900/40 flex items-center justify-center space-x-1.5 cursor-pointer"
               >
                 <MessageSquare className="w-3.5 h-3.5" />
-                <span>Book Ticket</span>
+                <span>{banner.buttonText || "Book Ticket"}</span>
               </button>
             </div>
           </div>
@@ -148,8 +175,8 @@ export const HeroSection: React.FC = () => {
 
               <div className="relative w-full aspect-[2.35/1] min-h-[220px] sm:min-h-[360px] bg-slate-950 rounded-xl overflow-hidden">
                 <Image
-                  src="/maa-laxmi-travels-banner.png"
-                  alt="Maa Laxmi Travels Official Banner Full View"
+                  src={banner.imageUrl || "/maa-laxmi-travels-banner.png"}
+                  alt={banner.heading}
                   fill
                   sizes="1200px"
                   className="object-contain object-center"
@@ -160,15 +187,16 @@ export const HeroSection: React.FC = () => {
                 <span className="font-extrabold text-amber-400">
                   🙏 Maa Laxmi Travels • Mo. 7488202225 • www.maalaxmitravels.in
                 </span>
-                <a
-                  href={directWhatsAppUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1"
+                <button
+                  onClick={() => {
+                    setIsZoomOpen(false);
+                    handleButtonClick();
+                  }}
+                  className="text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 cursor-pointer"
                 >
                   <MessageSquare className="w-3.5 h-3.5" />
-                  <span>Book on WhatsApp ➔</span>
-                </a>
+                  <span>{banner.buttonText || "Book Ticket"} ➔</span>
+                </button>
               </div>
             </motion.div>
           </motion.div>
