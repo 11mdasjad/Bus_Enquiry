@@ -114,7 +114,7 @@ export const HeroSection: React.FC = () => {
                 className="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black transition shadow-md shadow-emerald-900/40 flex items-center justify-center space-x-1.5 cursor-pointer"
               >
                 <MessageSquare className="w-3.5 h-3.5" />
-                <span>WhatsApp Inquiry</span>
+                <span>Book Ticket</span>
               </button>
             </div>
           </div>

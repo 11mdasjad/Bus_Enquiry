@@ -159,10 +159,10 @@ ${data.additionalNotes ? `📝 *Additional Notes / Requests:* ${data.additionalN
                     <span>MAA LAXMI TRAVELS GOPALGANJ</span>
                   </div>
                   <h2 className="text-xl sm:text-3xl font-black text-slate-900 leading-tight">
-                    Passenger Ticket Inquiry Details
+                    Passenger Bus Ticket Booking
                   </h2>
                   <p className="text-slate-500 text-xs sm:text-sm mt-0.5">
-                    Fill in details below to send inquiry directly to WhatsApp (**7488202225**).
+                    Fill in details below to book ticket directly on WhatsApp (**7488202225**).
                   </p>
                 </div>
               </div>
@@ -588,7 +588,7 @@ ${data.additionalNotes ? `📝 *Additional Notes / Requests:* ${data.additionalN
                 ) : (
                   <>
                     <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
-                    <span className="truncate">Send Inquiry to WhatsApp (7488202225)</span>
+                    <span className="truncate">Book Ticket on WhatsApp (7488202225)</span>
                   </>
                 )}
               </button>

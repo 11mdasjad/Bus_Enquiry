@@ -130,7 +130,7 @@ export const Footer: React.FC = () => {
               <li className="flex items-start space-x-3">
                 <MessageSquare className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
                 <div>
-                  <span className="text-xs text-slate-400 block">WhatsApp Inquiry</span>
+                  <span className="text-xs text-slate-400 block">WhatsApp Ticket Booking</span>
                   <a
                     href={directWhatsAppUrl}
                     target="_blank"
