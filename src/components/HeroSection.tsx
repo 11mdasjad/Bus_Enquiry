@@ -1,52 +1,42 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { MapPin, Sparkles, MessageSquare, ShieldCheck } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Phone, MessageSquare, Sparkles, MapPin, Maximize2, X } from "lucide-react";
 
 export const HeroSection: React.FC = () => {
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
+
   const whatsAppNumber = "917488202225";
   const directWhatsAppUrl = `https://wa.me/${whatsAppNumber}?text=${encodeURIComponent(
     "Hello Maa Laxmi Travels, I want to inquire about Gopalganj bus tickets."
   )}`;
 
   return (
-    <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-28 overflow-hidden bg-slate-950 text-white border-b border-slate-800">
-      {/* Full-Width Hero Background Bus Fleet Image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/maa-laxmi-bus-fleet-banner.jpg"
-          alt="Maa Laxmi Travels Bus Fleet Full Width Banner"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center scale-105 filter brightness-90"
-        />
-        {/* Dark Gradient Overlay for Maximum Readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/80 to-slate-950/65 backdrop-blur-[1px]"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/40"></div>
-      </div>
+    <section className="relative pt-24 pb-8 sm:pt-32 sm:pb-12 bg-slate-950 text-white border-b border-slate-800 overflow-hidden">
+      {/* Subtle Background Glow */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-900/30 via-slate-950 to-slate-950"></div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl space-y-5 sm:space-y-7 text-center lg:text-left">
-          {/* Top Religious Tagline Badge */}
+      <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+        
+        {/* Top Header Badge & Title */}
+        <div className="text-center max-w-3xl mx-auto space-y-3">
           <motion.div
-            initial={{ opacity: 0, y: -15 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-red-600/90 backdrop-blur-md border border-red-400/40 text-white text-xs sm:text-sm font-extrabold shadow-lg"
+            className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-red-600/90 backdrop-blur-md border border-red-400/40 text-white text-xs sm:text-sm font-extrabold shadow-lg"
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-            <span className="truncate">🙏 !! जय माता दी !! • MAA LAXMI TRAVELS • DAILY BUS SERVICES</span>
+            <span className="truncate">🙏 !! जय माता दी !! • MAA LAXMI TRAVELS GOPALGANJ</span>
           </motion.div>
 
-          {/* Main Headline */}
           <motion.h1
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight uppercase drop-shadow-md"
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white uppercase drop-shadow-md"
           >
             Book Your{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-orange-400 to-amber-400">
@@ -54,66 +44,129 @@ export const HeroSection: React.FC = () => {
             </span>
           </motion.h1>
 
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-sm sm:text-lg text-slate-200 leading-relaxed font-semibold max-w-2xl mx-auto lg:mx-0 drop-shadow-xs"
-          >
-            Fill in your travel details below and our team will contact you directly on WhatsApp or call shortly.
-          </motion.p>
-
-          {/* Location & Contact Operator Card (Glassmorphism) */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.25 }}
-            className="p-4 sm:p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-white"
-          >
-            <div className="flex items-center space-x-3.5 text-center sm:text-left">
-              <div className="w-11 h-11 rounded-xl bg-red-600/30 border border-red-400/40 flex items-center justify-center shrink-0 hidden xs:flex">
-                <MapPin className="w-5 h-5 text-red-400" />
-              </div>
-              <div>
-                <span className="font-extrabold text-white text-sm sm:text-base block">
-                  Maa Laxmi Complex
-                </span>
-                <span className="text-slate-300 text-xs font-medium">
-                  Banjari Pokhara, Shiv Mandir • Gopalganj
-                </span>
-              </div>
-            </div>
-
-            <a
-              href={directWhatsAppUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm rounded-xl flex items-center justify-center space-x-2 shadow-lg shadow-emerald-900/40 transition transform active:scale-95 shrink-0"
-            >
-              <MessageSquare className="w-4 h-4" />
-              <span>Mo. 7488202225</span>
-            </a>
-          </motion.div>
-
-          {/* Bus Features Pills (Glassmorphism Badges) */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="grid grid-cols-2 gap-3 text-xs font-bold max-w-lg"
-          >
-            <div className="flex items-center justify-center space-x-2 py-3 px-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-white shadow-sm">
-              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Seater & Sleeper</span>
-            </div>
-            <div className="flex items-center justify-center space-x-2 py-3 px-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-white shadow-sm">
-              <MessageSquare className="w-4 h-4 text-sky-400 shrink-0" />
-              <span>WhatsApp Inquiry</span>
-            </div>
-          </motion.div>
+          <p className="text-xs sm:text-base text-slate-300 font-medium max-w-xl mx-auto">
+            Daily AC Seater & Sleeper Bus Services from Gopalganj to All Major North & South Indian Destinations.
+          </p>
         </div>
+
+        {/* Perfectly Fitted & Responsive Banner Container */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-800 bg-slate-900 shadow-2xl group cursor-pointer"
+          onClick={() => setIsZoomOpen(true)}
+        >
+          {/* Top Red Accent Line */}
+          <div className="h-1 sm:h-1.5 bg-gradient-to-r from-red-600 via-orange-500 to-amber-400"></div>
+
+          {/* Banner Image Display - Fitted Responsive Height & Aspect Ratio */}
+          <div className="relative w-full aspect-[2.35/1] bg-slate-950 min-h-[160px] sm:min-h-[280px]">
+            <Image
+              src="/maa-laxmi-travels-banner.png"
+              alt="Maa Laxmi Travels Official Bus Ticket Booking Banner"
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 95vw, 1200px"
+              className="object-contain object-center transition-transform duration-500 group-hover:scale-[1.01]"
+            />
+            
+            {/* Click to Zoom Overlay Hint */}
+            <div className="absolute inset-0 bg-slate-950/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <span className="px-4 py-2 rounded-xl bg-red-600/90 text-white font-extrabold text-xs sm:text-sm shadow-xl flex items-center space-x-2 border border-red-400">
+                <Maximize2 className="w-4 h-4" />
+                <span>Tap / Click to View Full Banner</span>
+              </span>
+            </div>
+          </div>
+
+          {/* Quick Contact Bar below Banner */}
+          <div className="p-3 sm:p-4 bg-slate-900/90 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <div className="flex items-center space-x-2 text-slate-300 text-center sm:text-left">
+              <MapPin className="w-4 h-4 text-red-500 shrink-0" />
+              <span className="font-semibold text-slate-200">
+                Maa Laxmi Complex, Banjari Pokhara, Shiv Mandir • Gopalganj
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2.5 w-full sm:w-auto shrink-0">
+              <a
+                href="tel:7488202225"
+                onClick={(e) => e.stopPropagation()}
+                className="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold transition border border-slate-700 flex items-center justify-center space-x-1.5"
+              >
+                <Phone className="w-3.5 h-3.5 text-red-400" />
+                <span>Call: 7488202225</span>
+              </a>
+
+              <a
+                href={directWhatsAppUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black transition shadow-md shadow-emerald-900/40 flex items-center justify-center space-x-1.5"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>WhatsApp</span>
+              </a>
+            </div>
+          </div>
+        </motion.div>
       </div>
+
+      {/* Lightbox / Fullscreen Zoom Modal for Mobile & Desktop */}
+      <AnimatePresence>
+        {isZoomOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 bg-slate-950/95 backdrop-blur-md"
+            onClick={() => setIsZoomOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative max-w-5xl w-full bg-slate-900 border border-slate-800 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl p-2 sm:p-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setIsZoomOpen(false)}
+                className="absolute top-3 right-3 z-20 p-2 rounded-full bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition cursor-pointer"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="relative w-full aspect-[2.35/1] min-h-[220px] sm:min-h-[360px] bg-slate-950 rounded-xl overflow-hidden">
+                <Image
+                  src="/maa-laxmi-travels-banner.png"
+                  alt="Maa Laxmi Travels Official Banner Full View"
+                  fill
+                  sizes="1200px"
+                  className="object-contain object-center"
+                />
+              </div>
+
+              <div className="mt-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm px-2 text-slate-300">
+                <span className="font-extrabold text-amber-400">
+                  🙏 Maa Laxmi Travels • Mo. 7488202225 • www.maalaxmitravels.in
+                </span>
+                <a
+                  href={directWhatsAppUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>Book on WhatsApp ➔</span>
+                </a>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
