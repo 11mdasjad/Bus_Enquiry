@@ -13,29 +13,35 @@ import {
   ArrowLeft,
   Sparkles,
   Type,
-  ImageIcon
+  ImageIcon,
+  Plus,
+  Trash2,
+  ArrowUp,
+  ArrowDown,
+  Layers,
+  Settings,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
-import { BannerData } from "@/lib/banner-types";
+import { BannerItem, defaultBanners } from "@/lib/banner-types";
 
 export default function AdminBannerPage() {
-  const [heading, setHeading] = useState("");
-  const [description, setDescription] = useState("");
-  const [buttonText, setButtonText] = useState("");
-  const [buttonLink, setButtonLink] = useState("");
-  const [showBanner, setShowBanner] = useState(true);
-  const [currentImageUrl, setCurrentImageUrl] = useState("");
-  
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [banners, setBanners] = useState<BannerItem[]>(defaultBanners);
+  const [selectedId, setSelectedId] = useState<string>("banner-1");
+  const [showBanner, setShowBanner] = useState<boolean>(true);
+  const [autoPlayInterval, setAutoPlayInterval] = useState<number>(5000);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
-  const [isDragging, setIsDragging] = useState(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch initial banner configuration
+  // Live preview slider state
+  const [previewIndex, setPreviewIndex] = useState<number>(0);
+
+  // Fetch banner configuration
   useEffect(() => {
     fetchBannerData();
   }, []);
@@ -45,15 +51,17 @@ export default function AdminBannerPage() {
     try {
       const res = await fetch("/api/banner", { cache: "no-store" });
       const data = await res.json();
-      if (data.success && data.banner) {
-        const b: BannerData = data.banner;
-        setHeading(b.heading);
-        setDescription(b.description);
-        setButtonText(b.buttonText);
-        setButtonLink(b.buttonLink);
-        setShowBanner(b.showBanner);
-        setCurrentImageUrl(b.imageUrl);
-        setPreviewUrl(b.imageUrl);
+      if (data.success) {
+        if (Array.isArray(data.banners) && data.banners.length > 0) {
+          setBanners(data.banners);
+          setSelectedId(data.banners[0].id);
+        }
+        if (typeof data.showBanner === "boolean") {
+          setShowBanner(data.showBanner);
+        }
+        if (typeof data.autoPlayInterval === "number") {
+          setAutoPlayInterval(data.autoPlayInterval);
+        }
       }
     } catch (err) {
       console.error("Failed to load banner data:", err);
@@ -70,7 +78,7 @@ export default function AdminBannerPage() {
     }, 3500);
   };
 
-  // Client-side image compression to ensure tiny payload size (< 300KB) for Vercel
+  // Client-side image compression
   const compressImage = (file: File, maxWidth = 1600, quality = 0.85): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -105,15 +113,28 @@ export default function AdminBannerPage() {
     });
   };
 
-  const handleFileChange = (file: File | null) => {
+  const selectedBanner = banners.find((b) => b.id === selectedId) || banners[0];
+
+  const updateSelectedBanner = (fields: Partial<BannerItem>) => {
+    setBanners((prev) =>
+      prev.map((b) => (b.id === selectedId ? { ...b, ...fields } : b))
+    );
+  };
+
+  const handleFileChange = async (file: File | null) => {
     if (!file) return;
     if (!file.type.startsWith("image/")) {
       showToast("Please select a valid image file", "error");
       return;
     }
-    setSelectedFile(file);
-    const objectUrl = URL.createObjectURL(file);
-    setPreviewUrl(objectUrl);
+    try {
+      const compressedUrl = await compressImage(file);
+      updateSelectedBanner({ imageUrl: compressedUrl });
+      showToast("Banner image updated!", "success");
+    } catch (err) {
+      console.error("Image compression error:", err);
+      showToast("Failed to process image", "error");
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -134,23 +155,59 @@ export default function AdminBannerPage() {
     }
   };
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleAddNewBanner = () => {
+    const newId = `banner-${Date.now()}`;
+    const newBanner: BannerItem = {
+      id: newId,
+      imageUrl: "/volvo-bus-hero.png",
+      heading: "New Bus Special Offer",
+      description: "Book early to get exclusive seat discounts on Gopalganj routes.",
+      buttonText: "Book Now",
+      buttonLink: "#booking-form",
+      active: true,
+    };
+
+    setBanners((prev) => [...prev, newBanner]);
+    setSelectedId(newId);
+    showToast("New banner added! Modify its details below.", "success");
+  };
+
+  const handleDeleteBanner = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (banners.length <= 1) {
+      showToast("At least one banner must remain in the system", "error");
+      return;
+    }
+    const updated = banners.filter((b) => b.id !== id);
+    setBanners(updated);
+    if (selectedId === id) {
+      setSelectedId(updated[0].id);
+    }
+    showToast("Banner removed", "success");
+  };
+
+  const handleMoveBanner = (index: number, direction: "up" | "down", e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= banners.length) return;
+
+    const updated = [...banners];
+    const temp = updated[index];
+    updated[index] = updated[newIndex];
+    updated[newIndex] = temp;
+
+    setBanners(updated);
+  };
+
+  const handleSaveAll = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
 
     try {
-      let finalImageUrl = currentImageUrl;
-      if (selectedFile) {
-        finalImageUrl = await compressImage(selectedFile);
-      }
-
-      const payload: BannerData = {
-        heading,
-        description,
-        buttonText,
-        buttonLink,
+      const payload = {
+        banners,
         showBanner,
-        imageUrl: finalImageUrl,
+        autoPlayInterval,
       };
 
       const res = await fetch("/api/banner", {
@@ -163,23 +220,13 @@ export default function AdminBannerPage() {
 
       const result = await res.json().catch(() => null);
 
-      if (res.ok && result?.success && result?.banner) {
-        const b: BannerData = result.banner;
-        setHeading(b.heading);
-        setDescription(b.description);
-        setButtonText(b.buttonText);
-        setButtonLink(b.buttonLink);
-        setShowBanner(b.showBanner);
-        setCurrentImageUrl(b.imageUrl);
-        setPreviewUrl(b.imageUrl);
-        setSelectedFile(null);
-
-        showToast("Banner updated successfully!", "success");
+      if (res.ok && result?.success) {
+        showToast("All banner changes saved successfully!", "success");
       } else {
         showToast(result?.message || `Server returned error (${res.status})`, "error");
       }
     } catch (err) {
-      console.error("Save banner error:", err);
+      console.error("Save banners error:", err);
       showToast("An error occurred while saving", "error");
     } finally {
       setIsSaving(false);
@@ -191,16 +238,18 @@ export default function AdminBannerPage() {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 text-slate-700">
         <div className="flex items-center space-x-3 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
           <div className="w-6 h-6 border-3 border-red-600 border-t-transparent rounded-full animate-spin"></div>
-          <span className="font-bold text-sm">Loading Banner Admin...</span>
+          <span className="font-bold text-sm">Loading Banner Management...</span>
         </div>
       </div>
     );
   }
 
+  const activeBanners = banners.filter((b) => b.active);
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-red-500 selection:text-white pb-20">
       
-      {/* Toast Notification */}
+      {/* Toast Alert */}
       {toastMessage && (
         <div className="fixed top-5 right-5 z-50 animate-bounce-in">
           <div
@@ -220,9 +269,9 @@ export default function AdminBannerPage() {
         </div>
       )}
 
-      {/* Admin Header Bar */}
+      {/* Admin Top Bar */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-2xs">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Link
               href="/"
@@ -236,215 +285,412 @@ export default function AdminBannerPage() {
                 Admin Panel
               </span>
               <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                Hero Banner Management
+                Hero Banner Slider Management
               </h1>
             </div>
           </div>
 
-          <Link
-            href="/"
-            target="_blank"
-            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow-sm"
-          >
-            <Eye className="w-4 h-4 text-emerald-400" />
-            <span>View Homepage</span>
-          </Link>
+          <div className="flex items-center space-x-3">
+            <Link
+              href="/"
+              target="_blank"
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 border border-slate-300"
+            >
+              <Eye className="w-4 h-4 text-emerald-600" />
+              <span>View Homepage</span>
+            </Link>
+
+            <button
+              onClick={handleSaveAll}
+              disabled={isSaving}
+              className="px-5 py-2.5 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white rounded-xl text-xs font-black transition flex items-center space-x-1.5 shadow-md shadow-red-600/30 cursor-pointer disabled:opacity-75"
+            >
+              {isSaving ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Saving...</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>Save All Changes</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Main Admin Form Layout */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
-        <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          {/* Form Inputs (Left Column - 7 Cols) */}
-          <div className="lg:col-span-7 space-y-6">
-            
-            {/* Card 1: Banner Image Upload */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4 text-red-600" />
-                  <span>1. Banner Image Upload</span>
-                </label>
-                <span className="text-xs text-slate-400 font-medium">PNG, JPG, WEBP (Auto-optimized)</span>
-              </div>
-
-              {/* Drag & Drop Area */}
-              <div
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center space-y-3 ${
-                  isDragging
-                    ? "border-red-500 bg-red-50/50"
-                    : "border-slate-300 hover:border-red-400 bg-slate-50/50 hover:bg-slate-50"
-                }`}
-              >
-                <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center text-red-600">
-                  <Upload className="w-6 h-6" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-slate-800">
-                    <span className="text-red-600 hover:underline">Click to upload</span> or drag and drop
-                  </p>
-                  <p className="text-xs text-slate-400 mt-0.5">High resolution wide banner image</p>
-                </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-                  className="hidden"
-                />
-              </div>
+      {/* Main Content Workspace */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 space-y-8">
+        
+        {/* Global Slider Config Bar */}
+        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center space-x-3">
+            <div className="p-3 bg-red-50 text-red-600 rounded-2xl border border-red-100">
+              <Settings className="w-6 h-6" />
             </div>
-
-            {/* Card 2: Banner Details Form */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
-              <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-3">
-                <Type className="w-4 h-4 text-red-600" />
-                <span>2. Banner Content & Action</span>
-              </h2>
-
-              {/* Banner Heading */}
-              <div>
-                <label htmlFor="heading" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Banner Heading
-                </label>
-                <input
-                  id="heading"
-                  type="text"
-                  required
-                  value={heading}
-                  onChange={(e) => setHeading(e.target.value)}
-                  placeholder="e.g. Book Your Bus Journey"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-600 focus:border-red-600 transition placeholder:text-slate-400 font-semibold"
-                />
-              </div>
-
-              {/* Banner Description */}
-              <div>
-                <label htmlFor="description" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Banner Description
-                </label>
-                <textarea
-                  id="description"
-                  rows={3}
-                  required
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="e.g. Daily AC Seater & Sleeper Bus Services from Gopalganj..."
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-600 focus:border-red-600 transition placeholder:text-slate-400 font-medium resize-none"
-                ></textarea>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                {/* Button Text */}
-                <div>
-                  <label htmlFor="buttonText" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Button Text
-                  </label>
-                  <input
-                    id="buttonText"
-                    type="text"
-                    required
-                    value={buttonText}
-                    onChange={(e) => setButtonText(e.target.value)}
-                    placeholder="e.g. Book Ticket"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-600 focus:border-red-600 transition font-semibold"
-                  />
-                </div>
-
-                {/* Button Link */}
-                <div>
-                  <label htmlFor="buttonLink" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Button Link
-                  </label>
-                  <input
-                    id="buttonLink"
-                    type="text"
-                    required
-                    value={buttonLink}
-                    onChange={(e) => setButtonLink(e.target.value)}
-                    placeholder="e.g. #booking-form"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-600 focus:border-red-600 transition font-semibold"
-                  />
-                </div>
-              </div>
-
-              {/* Show/Hide Banner Toggle */}
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <div>
-                  <span className="font-extrabold text-sm text-slate-900 block">Show Banner on Homepage</span>
-                  <span className="text-xs text-slate-500">Toggle whether the hero banner is displayed to users</span>
-                </div>
-
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={showBanner}
-                    onChange={(e) => setShowBanner(e.target.checked)}
-                    className="sr-only peer"
-                  />
-                  <div className="w-13 h-7 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-600"></div>
-                </label>
-              </div>
-            </div>
-
-            {/* Save Button */}
             <div>
-              <button
-                type="submit"
-                disabled={isSaving}
-                className="w-full py-4 px-6 bg-gradient-to-r from-red-600 via-orange-600 to-red-600 hover:from-red-700 hover:to-orange-700 text-white font-black text-base rounded-2xl shadow-xl shadow-red-600/25 transition transform active:scale-98 flex items-center justify-center space-x-2.5 cursor-pointer disabled:opacity-75"
-              >
-                {isSaving ? (
-                  <>
-                    <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Saving Banner Changes...</span>
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-5 h-5" />
-                    <span>Save Banner Changes</span>
-                  </>
-                )}
-              </button>
+              <h2 className="text-base font-black text-slate-900">Slider Controls & Settings</h2>
+              <p className="text-xs text-slate-500 font-medium">Configure display state and autoplay rotation speed</p>
             </div>
           </div>
 
-          {/* Right Column: Real-Time Live Banner Preview (5 Cols) */}
+          <div className="flex flex-wrap items-center gap-6 w-full sm:w-auto">
+            {/* Enable Slider Toggle */}
+            <div className="flex items-center space-x-3">
+              <span className="text-xs font-bold text-slate-700">Show Slider on Homepage</span>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showBanner}
+                  onChange={(e) => setShowBanner(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+              </label>
+            </div>
+
+            {/* Autoplay Speed Select */}
+            <div className="flex items-center space-x-2">
+              <label htmlFor="speed" className="text-xs font-bold text-slate-700">
+                Autoplay Speed:
+              </label>
+              <select
+                id="speed"
+                value={autoPlayInterval}
+                onChange={(e) => setAutoPlayInterval(Number(e.target.value))}
+                className="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-red-600"
+              >
+                <option value={3000}>3 Seconds (Fast)</option>
+                <option value={5000}>5 Seconds (Recommended)</option>
+                <option value={7000}>7 Seconds (Relaxed)</option>
+                <option value={10000}>10 Seconds (Slow)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Grid: Left (Banners List & Form) | Right (Live Preview) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* Left Column: Banners Selector & Form (7 Cols) */}
+          <div className="lg:col-span-7 space-y-6">
+            
+            {/* Banner List Selector Cards */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <label className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-red-600" />
+                  <span>Banner Carousel Items ({banners.length})</span>
+                </label>
+
+                <button
+                  type="button"
+                  onClick={handleAddNewBanner}
+                  className="px-3.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-extrabold transition flex items-center space-x-1 cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add New Banner</span>
+                </button>
+              </div>
+
+              {/* Banner Tabs List */}
+              <div className="space-y-3">
+                {banners.map((item, index) => {
+                  const isSelected = item.id === selectedId;
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => {
+                        setSelectedId(item.id);
+                        setPreviewIndex(index);
+                      }}
+                      className={`p-3.5 rounded-2xl border transition cursor-pointer flex items-center justify-between gap-3 ${
+                        isSelected
+                          ? "border-red-600 bg-red-50/40 ring-2 ring-red-600/20"
+                          : "border-slate-200 hover:border-slate-300 bg-white"
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3 overflow-hidden">
+                        {/* Thumbnail */}
+                        <div className="relative w-16 h-10 rounded-lg overflow-hidden border border-slate-200 bg-slate-900 shrink-0">
+                          {item.imageUrl && (
+                            <Image
+                              src={item.imageUrl}
+                              alt={item.heading}
+                              fill
+                              sizes="100px"
+                              className="object-cover"
+                            />
+                          )}
+                        </div>
+
+                        {/* Title & Status */}
+                        <div className="truncate">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-xs font-black text-red-600">#{index + 1}</span>
+                            <span className="text-sm font-bold text-slate-900 truncate">
+                              {item.heading || "Untitled Banner"}
+                            </span>
+                          </div>
+                          <span
+                            className={`inline-block mt-0.5 text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                              item.active
+                                ? "bg-emerald-100 text-emerald-800"
+                                : "bg-slate-200 text-slate-600"
+                            }`}
+                          >
+                            {item.active ? "Active in Slider" : "Hidden"}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Item Actions (Reorder & Delete) */}
+                      <div className="flex items-center space-x-1 shrink-0">
+                        <button
+                          type="button"
+                          disabled={index === 0}
+                          onClick={(e) => handleMoveBanner(index, "up", e)}
+                          className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 disabled:opacity-30 cursor-pointer"
+                          title="Move Up"
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={index === banners.length - 1}
+                          onClick={(e) => handleMoveBanner(index, "down", e)}
+                          className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 disabled:opacity-30 cursor-pointer"
+                          title="Move Down"
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => handleDeleteBanner(item.id, e)}
+                          className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 cursor-pointer"
+                          title="Delete Banner"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Selected Banner Editor Form */}
+            {selectedBanner && (
+              <form onSubmit={handleSaveAll} className="space-y-6">
+                
+                {/* Image Upload Card */}
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <label className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                      <ImageIcon className="w-4 h-4 text-red-600" />
+                      <span>Editing Banner #{banners.findIndex((b) => b.id === selectedId) + 1} Image</span>
+                    </label>
+                    <span className="text-xs text-slate-400 font-medium">Auto WebP Compressed</span>
+                  </div>
+
+                  {/* Drag & Drop */}
+                  <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center space-y-3 ${
+                      isDragging
+                        ? "border-red-500 bg-red-50/50"
+                        : "border-slate-300 hover:border-red-400 bg-slate-50/50 hover:bg-slate-50"
+                    }`}
+                  >
+                    <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center text-red-600">
+                      <Upload className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-800">
+                        <span className="text-red-600 hover:underline">Click to upload new image</span> or drag and drop
+                      </p>
+                      <p className="text-xs text-slate-400 mt-0.5">High quality wide banner (PNG, JPG, WEBP)</p>
+                    </div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+                      className="hidden"
+                    />
+                  </div>
+
+                  {/* Image URL Manual Override */}
+                  <div>
+                    <label htmlFor="imageUrl" className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                      Or Image URL Path
+                    </label>
+                    <input
+                      id="imageUrl"
+                      type="text"
+                      value={selectedBanner.imageUrl}
+                      onChange={(e) => updateSelectedBanner({ imageUrl: e.target.value })}
+                      placeholder="/maa-laxmi-travels-banner.png"
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold"
+                    />
+                  </div>
+                </div>
+
+                {/* Banner Text Details Form */}
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
+                  <h2 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-3">
+                    <Type className="w-4 h-4 text-red-600" />
+                    <span>Banner Content & Buttons</span>
+                  </h2>
+
+                  {/* Banner Heading */}
+                  <div>
+                    <label htmlFor="heading" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Heading Title
+                    </label>
+                    <input
+                      id="heading"
+                      type="text"
+                      required
+                      value={selectedBanner.heading}
+                      onChange={(e) => updateSelectedBanner({ heading: e.target.value })}
+                      placeholder="e.g. Book Your Bus Journey"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-600 font-semibold"
+                    />
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label htmlFor="description" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Sub-heading / Description
+                    </label>
+                    <textarea
+                      id="description"
+                      rows={3}
+                      required
+                      value={selectedBanner.description}
+                      onChange={(e) => updateSelectedBanner({ description: e.target.value })}
+                      placeholder="e.g. Daily AC Seater & Sleeper Bus Services from Gopalganj..."
+                      className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-600 font-medium resize-none"
+                    ></textarea>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    {/* Button Text */}
+                    <div>
+                      <label htmlFor="buttonText" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Button Label
+                      </label>
+                      <input
+                        id="buttonText"
+                        type="text"
+                        required
+                        value={selectedBanner.buttonText}
+                        onChange={(e) => updateSelectedBanner({ buttonText: e.target.value })}
+                        placeholder="e.g. Book Ticket"
+                        className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm font-semibold focus:ring-2 focus:ring-red-600"
+                      />
+                    </div>
+
+                    {/* Button Link */}
+                    <div>
+                      <label htmlFor="buttonLink" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Button Action / Link
+                      </label>
+                      <input
+                        id="buttonLink"
+                        type="text"
+                        required
+                        value={selectedBanner.buttonLink}
+                        onChange={(e) => updateSelectedBanner({ buttonLink: e.target.value })}
+                        placeholder="e.g. #booking-form"
+                        className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm font-semibold focus:ring-2 focus:ring-red-600"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Active Toggle for this banner */}
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <div>
+                      <span className="font-extrabold text-sm text-slate-900 block">Include Banner in Slider</span>
+                      <span className="text-xs text-slate-500">Toggle whether this specific banner item is active</span>
+                    </div>
+
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selectedBanner.active}
+                        onChange={(e) => updateSelectedBanner({ active: e.target.checked })}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Submit Save Button */}
+                <div>
+                  <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="w-full py-4 px-6 bg-gradient-to-r from-red-600 via-orange-600 to-red-600 hover:from-red-700 hover:to-orange-700 text-white font-black text-base rounded-2xl shadow-xl shadow-red-600/25 transition transform active:scale-98 flex items-center justify-center space-x-2.5 cursor-pointer disabled:opacity-75"
+                  >
+                    {isSaving ? (
+                      <>
+                        <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Saving All Changes...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-5 h-5" />
+                        <span>Save All Changes Now</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+
+          {/* Right Column: Interactive Live Slider Preview (5 Cols) */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl sticky top-24 space-y-5">
+            <div className="bg-slate-900 text-white rounded-3xl p-6 border border-slate-800 shadow-xl sticky top-24 space-y-5">
               <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                 <span className="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
                   <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>Live Homepage Preview</span>
+                  <span>Live Homepage Slider Preview</span>
                 </span>
 
                 <span
                   className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                    showBanner ? "bg-emerald-950 text-emerald-400 border border-emerald-800" : "bg-red-950 text-red-400 border border-red-800"
+                    showBanner
+                      ? "bg-emerald-950 text-emerald-400 border border-emerald-800"
+                      : "bg-red-950 text-red-400 border border-red-800"
                   }`}
                 >
-                  {showBanner ? "Banner Active" : "Banner Hidden"}
+                  {showBanner ? `${activeBanners.length} Active` : "Slider Disabled"}
                 </span>
               </div>
 
               {!showBanner ? (
-                <div className="p-8 text-center bg-slate-950/80 rounded-2xl border border-slate-800/80 space-y-2">
+                <div className="p-8 text-center bg-slate-950/80 rounded-2xl border border-slate-800 space-y-2">
                   <EyeOff className="w-8 h-8 text-slate-500 mx-auto" />
-                  <p className="text-xs font-bold text-slate-400 uppercase">Banner Hidden</p>
-                  <p className="text-xs text-slate-500">The Hero Banner will not be rendered on the homepage when disabled.</p>
+                  <p className="text-xs font-bold text-slate-400 uppercase">Homepage Slider Hidden</p>
+                  <p className="text-xs text-slate-500">Enable "Show Slider on Homepage" above to display the hero banner.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {/* Banner Image Preview Container */}
+                  
+                  {/* Slider Preview Container */}
                   <div className="relative w-full aspect-[2.35/1] rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 shadow-inner">
-                    {previewUrl ? (
+                    {banners[previewIndex] ? (
                       <Image
-                        src={previewUrl}
+                        src={banners[previewIndex].imageUrl || "/maa-laxmi-travels-banner.png"}
                         alt="Banner Preview"
                         fill
                         sizes="500px"
@@ -455,34 +701,77 @@ export default function AdminBannerPage() {
                         No Image Selected
                       </div>
                     )}
+
+                    {/* Preview Controls */}
+                    {banners.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setPreviewIndex((prev) => (prev - 1 + banners.length) % banners.length)}
+                          className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-slate-950/80 text-white border border-slate-700 shadow cursor-pointer"
+                        >
+                          <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPreviewIndex((prev) => (prev + 1) % banners.length)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-slate-950/80 text-white border border-slate-700 shadow cursor-pointer"
+                        >
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
                   </div>
 
-                  {/* Text Details Preview */}
-                  <div className="space-y-2 pt-1">
-                    <h3 className="text-lg font-black text-white uppercase leading-snug">
-                      {heading || "Banner Heading"}
-                    </h3>
-                    <p className="text-xs text-slate-300 font-medium leading-relaxed">
-                      {description || "Banner description paragraph text..."}
-                    </p>
-                  </div>
+                  {/* Dot Indicators Preview */}
+                  {banners.length > 1 && (
+                    <div className="flex items-center justify-center space-x-1.5 py-1">
+                      {banners.map((b, i) => (
+                        <button
+                          key={b.id}
+                          onClick={() => setPreviewIndex(i)}
+                          className={`h-2 rounded-full transition-all cursor-pointer ${
+                            i === previewIndex ? "w-6 bg-amber-400" : "w-2 bg-slate-700"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
 
-                  {/* Button Preview */}
-                  <div className="pt-2">
-                    <span className="inline-block px-5 py-2.5 bg-emerald-600 text-white text-xs font-black rounded-xl shadow-md">
-                      {buttonText || "Button Text"} ➔
-                    </span>
-                  </div>
+                  {/* Live Text Preview */}
+                  {banners[previewIndex] && (
+                    <div className="space-y-2 pt-1 border-t border-slate-800/80">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black text-amber-400 uppercase">
+                          Slide #{previewIndex + 1}
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          {banners[previewIndex].active ? "Active" : "Inactive"}
+                        </span>
+                      </div>
+                      <h3 className="text-base font-black text-white uppercase leading-snug">
+                        {banners[previewIndex].heading || "Banner Heading"}
+                      </h3>
+                      <p className="text-xs text-slate-300 font-medium leading-relaxed">
+                        {banners[previewIndex].description || "Banner description..."}
+                      </p>
+                      <div className="pt-2">
+                        <span className="inline-block px-4 py-2 bg-emerald-600 text-white text-xs font-black rounded-xl">
+                          {banners[previewIndex].buttonText || "Button Text"} ➔
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
-              <div className="pt-3 border-t border-slate-800/80 text-[11px] text-slate-400">
-                <span>Updates save instantly to <strong className="text-slate-200">data/banner.json</strong> and homepage.</span>
+              <div className="pt-3 border-t border-slate-800 text-[11px] text-slate-400">
+                <span>Saving updates writes directly to <strong className="text-slate-200">data/banner.json</strong>.</span>
               </div>
             </div>
           </div>
 
-        </form>
+        </div>
       </main>
     </div>
   );

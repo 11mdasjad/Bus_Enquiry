@@ -1,8 +1,33 @@
 {
-  "heading": "Book Your Bus Journey",
-  "description": "Daily AC Seater & Sleeper Bus Services from Gopalganj to All Major Destinations.",
-  "buttonText": "Book Ticket",
-  "buttonLink": "#booking-form",
+  "banners": [
+    {
+      "id": "banner-1",
+      "imageUrl": "/maa-laxmi-travels-banner.png",
+      "heading": "Book Your Bus Journey",
+      "description": "Daily AC Seater & Sleeper Bus Services from Gopalganj to All Major Destinations.",
+      "buttonText": "Book Ticket",
+      "buttonLink": "#booking-form",
+      "active": true
+    },
+    {
+      "id": "banner-2",
+      "imageUrl": "/maa-laxmi-bus-fleet-banner.jpg",
+      "heading": "Luxury AC Sleeper & Seater Fleet",
+      "description": "Experience Maximum Comfort, Clean Reclining Seats & On-Time Direct Service.",
+      "buttonText": "Reserve Seat",
+      "buttonLink": "#booking-form",
+      "active": true
+    },
+    {
+      "id": "banner-3",
+      "imageUrl": "/volvo-bus-hero.png",
+      "heading": "Daily Express Routes & Fast Travel",
+      "description": "Connecting Gopalganj to Delhi, Varanasi, Siliguri, Lucknow, Agra, Jaipur & More.",
+      "buttonText": "Enquire Routes",
+      "buttonLink": "#booking-form",
+      "active": true
+    }
+  ],
   "showBanner": true,
-  "imageUrl": "/uploads/banner-1785917870163.png"
+  "autoPlayInterval": 3500
 }
